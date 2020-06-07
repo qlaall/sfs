@@ -31,4 +31,4 @@ jobs:
         password: ${{secrets.DOCKERHUB_TOKEN}}
         # Docker repository to tag the image with
         repository: ql562482472/simple-file-storage
-
+        tags: 0.1
