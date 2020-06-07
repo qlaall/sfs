@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:h2:${external.mount}/db
+    platform: h2
+    driverClassName: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+external:
+  mount: /opt/sfs/
