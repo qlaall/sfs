@@ -13,7 +13,14 @@ public class FileEntity {
     @Id
     private String key;
     private String md5;
+    /**
+     * myName.txt
+     */
     private String fileName;
+    /**
+     * such as /a/b/c/myName.txt
+     */
+    private String fullPathName;
     private String contentType;
     private OffsetDateTime createTime;
 
@@ -27,6 +34,14 @@ public class FileEntity {
 
     public String getMd5() {
         return md5;
+    }
+
+    public String getFullPathName() {
+        return fullPathName;
+    }
+
+    public void setFullPathName(String fullPathName) {
+        this.fullPathName = fullPathName;
     }
 
     public void setMd5(String md5) {

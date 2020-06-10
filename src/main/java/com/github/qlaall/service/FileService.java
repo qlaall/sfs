@@ -27,16 +27,18 @@ public class FileService {
      * @param size  文件大小 long
      * @param md5   md5值
      * @param originalFilename  源文件名
+     * @param fullPathName  全路径文件名,以"/"开头
      * @param contentType
      * @param inputStream   输入流
      */
-    public FileDescribe saveFile(long size, String md5, String originalFilename, String contentType, InputStream inputStream) throws IOException {
+    public FileDescribe saveFile(long size, String md5, String originalFilename, String fullPathName, String contentType, InputStream inputStream) throws IOException {
         String fileKey = md5 + size;
         FileUtils.copyInputStreamToFile(inputStream,new File(rootPath+fileKey));
         FileEntity fe = new FileEntity();
         fe.setKey(fileKey);
         fe.setContentType(contentType);
         fe.setFileName(originalFilename);
+        fe.setFullPathName(fullPathName);
         fe.setMd5(md5);
         fe.setCreateTime(OffsetDateTime.now());
         fileEntityRepository.save(fe);
@@ -51,6 +53,7 @@ public class FileService {
         fileDescribe.setContentType(fe.getContentType());
         fileDescribe.setMd5(fe.getMd5());
         fileDescribe.setFileName(fe.getFileName());
+        fileDescribe.setFullPathName(fe.getFullPathName());
         return fileDescribe;
 
     }

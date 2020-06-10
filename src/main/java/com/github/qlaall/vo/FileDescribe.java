@@ -2,7 +2,7 @@ package com.github.qlaall.vo;
 
 public class FileDescribe {
     /**
-     * etag 在这个项目中作为文件唯一标识 一般由md5+文件大小组合而成 
+     * etag 在这个项目中作为文件唯一标识 一般由md5+文件大小组合而成
      */
     private String etag;
     /**
@@ -18,9 +18,18 @@ public class FileDescribe {
      * 原始文件名
      */
     private String fileName;
+    private String fullPathName;
 
     public String getEtag() {
         return etag;
+    }
+
+    public String getFullPathName() {
+        return fullPathName;
+    }
+
+    public void setFullPathName(String fullPathName) {
+        this.fullPathName = fullPathName;
     }
 
     public void setEtag(String etag) {
