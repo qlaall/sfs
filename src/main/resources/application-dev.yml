@@ -22,7 +22,7 @@ spring:
         trace: false
         web-allow-others: false
 external:
-#  挂载路径 windows
-  mount: D:/opt/sfs
-#  挂载路径 linux
-#  mount: /opt/sfs
+#  挂载路径 windows; end with '/'
+  mount: D:/opt/sfs/
+#  挂载路径 linux; end with '/'
+#  mount: /opt/sfs/

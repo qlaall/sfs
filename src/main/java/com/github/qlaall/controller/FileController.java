@@ -1,5 +1,6 @@
 package com.github.qlaall.controller;
 
+import com.github.qlaall.config.BizException;
 import com.github.qlaall.entity.FileEntity;
 import com.github.qlaall.repository.FileEntityRepository;
 import com.github.qlaall.service.FileService;
@@ -48,6 +49,10 @@ public class FileController {
             fileName = StringUtils.substringAfterLast(fullPathNameNormalized, "/");
             fullPathName = fullPathNameNormalized;
         }
+        if (fileName.contains("/")){
+            throw new BizException("the fileName CANNOT contains '/' , Please enter a legal fileName in the param 'fullPathName'");
+        }
+
         FileDescribe fileDescribe = fileService.saveFile(
                 size,
                 md5,
@@ -76,10 +81,10 @@ public class FileController {
             return null;
         }
         if (fullPathName.endsWith("/")) {
-            throw new RuntimeException("the fullPathName CANNOT end with '/'");
+            throw new BizException("the fullPathName CANNOT end with '/'");
         }
         if (fullPathName.contains("//")) {
-            throw new RuntimeException("the fullPathName CANNOT contains '//'");
+            throw new BizException("the fullPathName CANNOT contains '//'");
         }
         if (!fullPathName.startsWith("/")) {
             return "/" + fullPathName;

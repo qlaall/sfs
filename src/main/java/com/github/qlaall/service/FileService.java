@@ -4,6 +4,7 @@ import com.github.qlaall.entity.FileEntity;
 import com.github.qlaall.repository.FileEntityRepository;
 import com.github.qlaall.vo.FileDescribe;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -32,8 +33,8 @@ public class FileService {
      * @param inputStream   输入流
      */
     public FileDescribe saveFile(long size, String md5, String originalFilename, String fullPathName, String contentType, InputStream inputStream) throws IOException {
-        String fileKey = md5 + size;
-        FileUtils.copyInputStreamToFile(inputStream,new File(rootPath+fileKey));
+        FSAgent fsAgent = new FSAgent();
+        String fileKey=fsAgent.saveToFS(inputStream,rootPath,md5,size);
         FileEntity fe = new FileEntity();
         fe.setKey(fileKey);
         fe.setContentType(contentType);
@@ -41,9 +42,10 @@ public class FileService {
         fe.setFullPathName(fullPathName);
         fe.setMd5(md5);
         fe.setCreateTime(OffsetDateTime.now());
+        fe.setFileSize(size);
+        fe.setPathDepth(StringUtils.countMatches(fullPathName,'/'));
         fileEntityRepository.save(fe);
         return fe2Fd(fe);
-
     }
 
     private FileDescribe fe2Fd(FileEntity fe) {

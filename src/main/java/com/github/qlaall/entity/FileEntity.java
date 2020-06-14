@@ -23,7 +23,17 @@ public class FileEntity {
     private String fullPathName;
     private String contentType;
     private OffsetDateTime createTime;
-
+    /**
+     * 文件大小
+     */
+    private Long fileSize;
+    /**
+     * this is the depth of path:
+     * /a.txt : 1
+     * /a/b.txt : 2
+     * /a/b/c.txt : 3
+     */
+    private Integer pathDepth;
     public String getKey() {
         return key;
     }
@@ -42,6 +52,22 @@ public class FileEntity {
 
     public void setFullPathName(String fullPathName) {
         this.fullPathName = fullPathName;
+    }
+
+    public Long getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(Long fileSize) {
+        this.fileSize = fileSize;
+    }
+
+    public Integer getPathDepth() {
+        return pathDepth;
+    }
+
+    public void setPathDepth(Integer pathDepth) {
+        this.pathDepth = pathDepth;
     }
 
     public void setMd5(String md5) {
