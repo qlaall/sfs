@@ -4,7 +4,7 @@ public class FileDescribe {
     /**
      * etag 在这个项目中作为文件唯一标识 一般由md5+文件大小组合而成
      */
-    private String etag;
+    private String fileKey;
     /**
      * 文件md5
      */
@@ -20,8 +20,8 @@ public class FileDescribe {
     private String fileName;
     private String fullPathName;
 
-    public String getEtag() {
-        return etag;
+    public String getFileKey() {
+        return fileKey;
     }
 
     public String getFullPathName() {
@@ -32,8 +32,8 @@ public class FileDescribe {
         this.fullPathName = fullPathName;
     }
 
-    public void setEtag(String etag) {
-        this.etag = etag;
+    public void setFileKey(String fileKey) {
+        this.fileKey = fileKey;
     }
 
     public String getMd5() {

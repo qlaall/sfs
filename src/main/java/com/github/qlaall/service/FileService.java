@@ -1,5 +1,6 @@
 package com.github.qlaall.service;
 
+import com.github.qlaall.config.BizException;
 import com.github.qlaall.entity.FileEntity;
 import com.github.qlaall.entity.PathNodeEntity;
 import com.github.qlaall.repository.FileEntityRepository;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FileService {
@@ -84,7 +86,7 @@ public class FileService {
     private FileDescribe fe2Fd(FileEntity fe) {
         FileDescribe fileDescribe = new FileDescribe();
 
-        fileDescribe.setEtag(fe.getKey());
+        fileDescribe.setFileKey(fe.getKey());
         fileDescribe.setContentType(fe.getContentType());
         fileDescribe.setMd5(fe.getMd5());
         fileDescribe.setFileName(fe.getFileName());
@@ -142,5 +144,16 @@ public class FileService {
         p.setTotal(pageData.getTotalElements());
         p.setPages(pageData.getTotalPages());
         return p;
+    }
+
+    /**
+     * 获取文件信息
+     * @param fileKey
+     * @return
+     */
+    public FileEntity getFileEntityByKey(String fileKey) {
+        Optional<FileEntity> byId = fileEntityRepository.findById(fileKey);
+        FileEntity fileEntity = byId.orElseThrow(() -> new BizException("该文件元信息不存在"));
+        return fileEntity;
     }
 }

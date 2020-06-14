@@ -3,6 +3,7 @@ package com.github.qlaall.controller;
 import com.github.qlaall.config.BizException;
 import com.github.qlaall.entity.FileEntity;
 import com.github.qlaall.entity.PathNodeEntity;
+import com.github.qlaall.service.FSAgent;
 import com.github.qlaall.service.FileService;
 import com.github.qlaall.util.Md5Util;
 import com.github.qlaall.vo.FileDescribe;
@@ -11,9 +12,14 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,12 +28,16 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLEncoder;
 import java.util.List;
 
 @Api
 @RequestMapping("/file")
 @RestController
 public class FileController {
+    @Value("${external.mount}")
+    String rootPath;
     @Autowired
     FileService fileService;
 
@@ -39,6 +49,10 @@ public class FileController {
      * @throws IOException
      */
     @PostMapping
+    @ApiOperation(value = "上传文件", notes = "", httpMethod = "POST", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "fullPathName", value = "指定文件的完整目录，如不传，默认为根目录",required = false)
+    })
     public FileDescribe uploadFile(@RequestParam("file") MultipartFile file,
                                    @RequestParam(value = "fullPathName", required = false) String fullPathNameParam) throws IOException {
         long size = file.getSize();
@@ -70,6 +84,23 @@ public class FileController {
         );
 
         return fileDescribe;
+    }
+    @GetMapping("filekey")
+    @ApiOperation(value = "获取文件，通过上传返回的fileKey", notes = "", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "fileKey", value = "文件的key"),
+            @ApiImplicitParam(name = "inline", value = "true表示在浏览器中打开，false表示作为附件下载",required = false,defaultValue = "true")
+    })
+    public ResponseEntity<byte[]> getByFileKey(@RequestParam("fileKey") String fileKey, @RequestParam(value = "inline",required = false,defaultValue = "true")Boolean inline) throws IOException {
+        FileEntity fe=fileService.getFileEntityByKey(fileKey);
+        InputStream is=new FSAgent().readStreamByFileKey(rootPath,fe.getKey());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(fe.getContentType()));
+        headers.setContentLength(fe.getFileSize());
+        String inlineSetting=inline?"inline":"attachment";
+        headers.add("Content-Disposition", inlineSetting+"; filename=" + URLEncoder.encode(fe.getFileName(),"UTF-8"));
+        return new ResponseEntity(IOUtils.toByteArray(is), headers, HttpStatus.OK);
     }
 
     /**

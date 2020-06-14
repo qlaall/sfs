@@ -1,5 +1,6 @@
 package com.github.qlaall.config;
 
+import org.apache.catalina.connector.ClientAbortException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,10 @@ public class ExceptionHandlerAdvice {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(toErrResponse(500,e.getMessage()));
     }
-
+    @ExceptionHandler(ClientAbortException.class)
+    public void ClientAbortException(ClientAbortException e) {
+        logger.info("客户端关闭了连接。");
+    }
     @ExceptionHandler(BizException.class)
     public ResponseEntity expireHandler(BizException e) {
         //业务异常无需打印异常栈，因为都是自己定义的 一看就知道了

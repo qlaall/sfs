@@ -2,7 +2,6 @@ package com.github.qlaall.service;
 
 import com.github.qlaall.config.BizException;
 import org.apache.commons.io.FileUtils;
-import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,5 +26,19 @@ public class FSAgent {
             throw new BizException("save fail");
         }
         return fileKey;
+    }
+
+    /**
+     * 通过fileKey读回字节流
+     * @param fileKey
+     * @return
+     */
+    public InputStream readStreamByFileKey(String rootPath,String fileKey) throws IOException {
+        String p = fileKey.substring(0, 2);
+        File file = new File(rootPath + p + "/" + fileKey);
+        if (!file.exists()){
+            throw new BizException("该文件不存在");
+        }
+        return FileUtils.openInputStream(file);
     }
 }
